@@ -5,10 +5,71 @@ import java.util.ArrayList;
 import hu.bme.mit.inf.scheduler.model.Path;
 import hu.bme.mit.inf.scheduler.model.RailRoadElement;
 import hu.bme.mit.inf.scheduler.model.Route;
+import hu.bme.mit.inf.scheduler.model.RouteLink;
 import hu.bme.mit.inf.scheduler.model.Segment;
 import hu.bme.mit.inf.scheduler.model.TurnOut;
 
 public class Calculations {
+	public static ArrayList<RouteLink> getRouteLinks(ArrayList<Route> routes) {
+		ArrayList<RouteLink> data = new ArrayList<>();
+		for (Route r : routes) {
+			ArrayList<Route> to = new ArrayList<>();
+			ArrayList<Route> from = new ArrayList<>();
+			for (Route r2 : routes) {
+				if (r == r2)
+					continue;
+				if (r.getTo() == r2.getFrom()) {
+					from.add(r2);
+				} else if (r.getFrom() == r2.getTo()) {
+					to.add(r2);
+				}
+			}
+			for (Route t : to) {
+				RailRoadElement via = r.getFrom();
+				if (via instanceof TurnOut) {
+					TurnOut turnout = (TurnOut) via;
+					if (routeContainsElement(t, turnout.getDivergent())
+							&& routeContainsElement(r, turnout.getStraight())) {
+						continue;
+					} else if (routeContainsElement(t, turnout.getStraight())
+							&& routeContainsElement(r, turnout.getDivergent())) {
+						continue;
+					}
+					data.add(new RouteLink(via, t, r, "to"));
+				} else {
+					data.add(new RouteLink(via, t, r, "to"));
+				}
+			}
+			for (Route f : from) {
+				RailRoadElement via = r.getTo();
+				if (via instanceof TurnOut) {
+					TurnOut turnout = (TurnOut) via;
+					if (routeContainsElement(r, turnout.getDivergent())
+							&& routeContainsElement(f, turnout.getStraight())) {
+						continue;
+					} else if (routeContainsElement(r, turnout.getStraight())
+							&& routeContainsElement(f, turnout.getDivergent())) {
+						continue;
+					}
+					data.add(new RouteLink(via, r, f, "from"));
+				} else {
+					data.add(new RouteLink(via, r, f, "from"));
+				}
+			}
+		}
+		return data;
+	}
+
+	public static boolean routeContainsElement(Route r, RailRoadElement element) {
+		ArrayList<Path> s = r.getPaths();
+		for (Path p : s) {
+			if (p.getFrom() == element || p.getVia() == element || p.getTo() == element) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public static ArrayList<Segment> getStations(ArrayList<RailRoadElement> sections) {
 		ArrayList<Segment> data = new ArrayList<>();
 

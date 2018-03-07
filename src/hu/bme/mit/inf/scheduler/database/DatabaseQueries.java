@@ -8,10 +8,15 @@ import hu.bme.mit.inf.scheduler.config.Config;
 import hu.bme.mit.inf.scheduler.model.Path;
 import hu.bme.mit.inf.scheduler.model.RailRoadElement;
 import hu.bme.mit.inf.scheduler.model.Route;
+import hu.bme.mit.inf.scheduler.model.RouteLink;
 import hu.bme.mit.inf.scheduler.model.Segment;
 import hu.bme.mit.inf.scheduler.model.TurnOut;
 
 public class DatabaseQueries implements Config {
+	public static ArrayList<RouteLink> getRouteLinks() {
+		ArrayList<Route> routes = getRoutes();
+		return Calculations.getRouteLinks(routes);
+	}
 
 	public static ArrayList<Segment> getStations() {
 		ArrayList<RailRoadElement> sections = getSections();

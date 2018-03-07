@@ -4,15 +4,23 @@ import java.util.ArrayList;
 
 import hu.bme.mit.inf.scheduler.config.Config;
 import hu.bme.mit.inf.scheduler.database.DatabaseQueries;
-import hu.bme.mit.inf.scheduler.model.Segment;
+import hu.bme.mit.inf.scheduler.model.RouteLink;
 
 public class Main implements Config {
 	public static void main(String[] args) {
-		ArrayList<Segment> stations = DatabaseQueries.getStations();
+		System.out.println("ALMA");
+		ArrayList<RouteLink> routes = DatabaseQueries.getRouteLinks();
 
-		Scheduler s = new Scheduler();
-		s.loadData();
-		s.addSchedule(null, stations.get(0), stations.get(1));
+		int i = 1;
+		for (RouteLink l : routes) {
+			System.out.println(i + ", " + l.s);
+			System.out.println("From:" + l.getFromRoute().getFrom().getId());
+			System.out.println("Via :" + l.getFromRoute().getTo().getId());
+			System.out.println("Via :" + l.getToRoute().getFrom().getId());
+			System.out.println("To  :" + l.getToRoute().getTo().getId());
+			System.out.println("");
+			i++;
+		}
 
 		// ArrayList<Path> paths = DatabaseQueries.getPaths();
 		//
