@@ -97,17 +97,21 @@ public class Calculations {
 
 		// ----
 
+		//Minden megállóra vagy váltóra keresünk onnan kiinduló route-okat, amik path-okból épülnek fel.
 		for (RailRoadElement r : stationOrTurnOut) {
-			ArrayList<Path> beginnerPaths = new ArrayList<>();
+			ArrayList<Path> beginnerPaths = new ArrayList<>(); //Ezekkel a path-okkal tudunk elindulni.
+			ArrayList<Path> viaPaths = new ArrayList<>(); // zsákutcák miatt kell
 			for (Path p : paths) {
 				if (p.getFrom().getId() == r.getId()) {
 					beginnerPaths.add(p);
 				}
+				if (p.getVia().getId() == r.getId()) {
+					viaPaths.add(p);
+				}
 			}
 
-			if (beginnerPaths.isEmpty())
-				continue;
-
+			//Minden kiinduló path-ra keresünk végigjárjuk a (még nem létezõ) route-ot, amíg egy megállóba/váltóba ütközünk
+			// Ez így pont egy route lesz.
 			for (Path begin : beginnerPaths) {
 				ArrayList<Path> routePaths = new ArrayList<>();
 				Path actual = begin;
@@ -124,11 +128,56 @@ public class Calculations {
 				}
 				routes.add(new Route(routePaths));
 				if (routePaths.size() == 1) {
-					routes.get(routes.size() - 1).setTo(routePaths.get(0).getVia());
+					boolean toIsStation = false;
+					for (RailRoadElement st : stationOrTurnOut) {
+						if (routePaths.get(0).getTo().getId() == st.getId()) {
+							toIsStation = true;
+						}
+					}
+					if (!toIsStation)
+						routes.get(routes.size() - 1).setTo(routePaths.get(0).getVia());
+				}
+			}
+			
+			//Ugyanez zsákutcáknál...
+			for (Path via : viaPaths) {
+				boolean last = false;
+				for (RailRoadElement s : stationOrTurnOut) {
+					if (s.getId() == via.getTo().getId()) {
+						last = true;
+						break;
+					}
+				}
+				if (last) {
+					ArrayList<Path> rp = new ArrayList<>();
+					rp.add(via);
+					routes.add(new Route(rp));
+					routes.get(routes.size() - 1).setFrom(via.getVia());
 				}
 			}
 			//
 		}
+
+		//Van néhány duplikálás, azokat itt kiszedjük (a zsákutcák miatt, ha két váltó/megálló közvetlen egymás mellett van)
+		//Azért néz ki ilyen macerásan, mert Iterátorral végigmegyünk, akkor nem lehet útközben kiszedni elemet a listából :D
+		ArrayList<Route> deletion = new ArrayList<>();
+		ArrayList<Route> cantDelete = new ArrayList<>();
+
+		for (Route r1 : routes) {
+			for (Route r2 : routes) {
+				if (r1 == r2)
+					continue;
+				if (r1.getFrom().getId() == r2.getFrom().getId() && r1.getTo().getId() == r2.getTo().getId()) {
+					if (!cantDelete.contains(r2)) {
+						deletion.add(r2);
+						if (!cantDelete.contains(r1))
+							cantDelete.add(r1);
+					}
+				}
+			}
+		}
+		routes.removeAll(deletion);
+
 		return routes;
 	}
 

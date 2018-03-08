@@ -42,7 +42,7 @@ public class Route {
 		return from;
 	}
 
-	private void setFrom(RailRoadElement from) {
+	public void setFrom(RailRoadElement from) {
 		this.from = from;
 	}
 

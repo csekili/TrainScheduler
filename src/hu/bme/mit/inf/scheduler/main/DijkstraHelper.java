@@ -1,27 +1,23 @@
 package hu.bme.mit.inf.scheduler.main;
 
-import hu.bme.mit.inf.scheduler.model.RailRoadElement;
 import hu.bme.mit.inf.scheduler.model.Route;
-import hu.bme.mit.inf.scheduler.model.TurnOut;
+import hu.bme.mit.inf.scheduler.model.RouteLink;
 
 public class DijkstraHelper {
 	public double weight = -1;
-	public Route route;
-	public RailRoadElement node, fromNode;
+	public RouteLink fromRouteLink;
+	public Route node, fromNode;
 
-	public DijkstraHelper(double weight, RailRoadElement node) {
+	public DijkstraHelper(double weight, Route node) {
 		this.weight = weight;
 		this.node = node;
 	}
 
-	public void setNewValues(double totalNewWeight, Route route, Route fromRoute) {
-		if(route.getFrom() instanceof TurnOut) {
-			if(node == ((TurnOut)route.getFrom()).getDivergent() || node ==((TurnOut)route.getFrom()).getStraight()) {
-			}
-		}
+	public void setNewValues(double totalNewWeight, RouteLink fromRouteLink) {
 		if (weight == -1 || totalNewWeight < weight) {
 			weight = totalNewWeight;
-			this.fromNode = route.getFrom();
+			this.fromRouteLink = fromRouteLink;
+			this.fromNode = fromRouteLink.getFromRoute();
 		}
 	}
 

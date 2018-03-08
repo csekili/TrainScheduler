@@ -45,4 +45,12 @@ public class ScheduleEntry {
 	public void setTo_station(Segment to_station) {
 		this.to_station = to_station;
 	}
+
+	public double weight() {
+		double w = 0;
+		for (ScheduleSection s : sections) {
+			w += s.getRoute().weight;
+		}
+		return w;
+	}
 }
