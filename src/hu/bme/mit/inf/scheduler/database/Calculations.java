@@ -13,51 +13,65 @@ public class Calculations {
 	public static ArrayList<RouteLink> getRouteLinks(ArrayList<Route> routes) {
 		ArrayList<RouteLink> data = new ArrayList<>();
 		for (Route r : routes) {
-			ArrayList<Route> to = new ArrayList<>();
-			ArrayList<Route> from = new ArrayList<>();
+			ArrayList<Route> prevRoutes = new ArrayList<>();
+			ArrayList<Route> nextRoutes = new ArrayList<>();
 			for (Route r2 : routes) {
 				if (r == r2)
 					continue;
-				if (r.getTo() == r2.getFrom()) {
-					from.add(r2);
-				} else if (r.getFrom() == r2.getTo()) {
-					to.add(r2);
+				if (r.getTo().getId() == r2.getFrom().getId()) {
+					nextRoutes.add(r2);
+				} else if (r.getFrom().getId() == r2.getTo().getId()) {
+					prevRoutes.add(r2);
 				}
 			}
-			for (Route t : to) {
+			for (Route prev : prevRoutes) {
 				RailRoadElement via = r.getFrom();
 				if (via instanceof TurnOut) {
 					TurnOut turnout = (TurnOut) via;
-					if (routeContainsElement(t, turnout.getDivergent())
+					if (routeContainsElement(prev, turnout.getDivergent())
 							&& routeContainsElement(r, turnout.getStraight())) {
 						continue;
-					} else if (routeContainsElement(t, turnout.getStraight())
+					} else if (routeContainsElement(prev, turnout.getStraight())
 							&& routeContainsElement(r, turnout.getDivergent())) {
 						continue;
 					}
-					data.add(new RouteLink(via, t, r, "to"));
-				} else {
-					data.add(new RouteLink(via, t, r, "to"));
+				}
+				if (r.getFrom().getId() != r.getTo().getId()) {
+					if (!containsRouteLink(via, prev, r, data))
+						data.add(new RouteLink(via, prev, r, "to"));
 				}
 			}
-			for (Route f : from) {
+			for (Route next : nextRoutes) {
 				RailRoadElement via = r.getTo();
 				if (via instanceof TurnOut) {
 					TurnOut turnout = (TurnOut) via;
 					if (routeContainsElement(r, turnout.getDivergent())
-							&& routeContainsElement(f, turnout.getStraight())) {
+							&& routeContainsElement(next, turnout.getStraight())) {
 						continue;
 					} else if (routeContainsElement(r, turnout.getStraight())
-							&& routeContainsElement(f, turnout.getDivergent())) {
+							&& routeContainsElement(next, turnout.getDivergent())) {
 						continue;
 					}
-					data.add(new RouteLink(via, r, f, "from"));
-				} else {
-					data.add(new RouteLink(via, r, f, "from"));
+				}
+				if (r.getFrom().getId() != next.getTo().getId()) {
+					if (!containsRouteLink(via, r, next, data))
+						data.add(new RouteLink(via, r, next, "from"));
 				}
 			}
 		}
 		return data;
+	}
+
+	private static boolean containsRouteLink(RailRoadElement via, Route from, Route to, ArrayList<RouteLink> data) {
+		int fromID = from.getFrom().getId();
+		int viaID = via.getId();
+		int toID = to.getTo().getId();
+		for (RouteLink rl : data) {
+			if (rl.getFromRoute().getFrom().getId() == fromID && rl.getViaNode().getId() == viaID
+					&& rl.getToRoute().getTo().getId() == toID)
+				return true;
+		}
+		return false;
 	}
 
 	public static boolean routeContainsElement(Route r, RailRoadElement element) {
@@ -97,9 +111,10 @@ public class Calculations {
 
 		// ----
 
-		//Minden megállóra vagy váltóra keresünk onnan kiinduló route-okat, amik path-okból épülnek fel.
+		// Minden megállóra vagy váltóra keresünk onnan kiinduló route-okat, amik
+		// path-okból épülnek fel.
 		for (RailRoadElement r : stationOrTurnOut) {
-			ArrayList<Path> beginnerPaths = new ArrayList<>(); //Ezekkel a path-okkal tudunk elindulni.
+			ArrayList<Path> beginnerPaths = new ArrayList<>(); // Ezekkel a path-okkal tudunk elindulni.
 			ArrayList<Path> viaPaths = new ArrayList<>(); // zsákutcák miatt kell
 			for (Path p : paths) {
 				if (p.getFrom().getId() == r.getId()) {
@@ -110,7 +125,8 @@ public class Calculations {
 				}
 			}
 
-			//Minden kiinduló path-ra keresünk végigjárjuk a (még nem létezõ) route-ot, amíg egy megállóba/váltóba ütközünk
+			// Minden kiinduló path-ra keresünk végigjárjuk a (még nem létezõ) route-ot,
+			// amíg egy megállóba/váltóba ütközünk
 			// Ez így pont egy route lesz.
 			for (Path begin : beginnerPaths) {
 				ArrayList<Path> routePaths = new ArrayList<>();
@@ -138,8 +154,8 @@ public class Calculations {
 						routes.get(routes.size() - 1).setTo(routePaths.get(0).getVia());
 				}
 			}
-			
-			//Ugyanez zsákutcáknál...
+
+			// Ugyanez zsákutcáknál...
 			for (Path via : viaPaths) {
 				boolean last = false;
 				for (RailRoadElement s : stationOrTurnOut) {
@@ -158,8 +174,10 @@ public class Calculations {
 			//
 		}
 
-		//Van néhány duplikálás, azokat itt kiszedjük (a zsákutcák miatt, ha két váltó/megálló közvetlen egymás mellett van)
-		//Azért néz ki ilyen macerásan, mert Iterátorral végigmegyünk, akkor nem lehet útközben kiszedni elemet a listából :D
+		// Van néhány duplikálás, azokat itt kiszedjük (a zsákutcák miatt, ha két
+		// váltó/megálló közvetlen egymás mellett van)
+		// Azért néz ki ilyen macerásan, mert Iterátorral végigmegyünk, akkor nem lehet
+		// útközben kiszedni elemet a listából :D
 		ArrayList<Route> deletion = new ArrayList<>();
 		ArrayList<Route> cantDelete = new ArrayList<>();
 

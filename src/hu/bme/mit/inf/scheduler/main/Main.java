@@ -4,11 +4,24 @@ import java.util.ArrayList;
 
 import hu.bme.mit.inf.scheduler.config.Config;
 import hu.bme.mit.inf.scheduler.database.DatabaseQueries;
-import hu.bme.mit.inf.scheduler.model.Path;
-import hu.bme.mit.inf.scheduler.model.Route;
+import hu.bme.mit.inf.scheduler.model.RouteLink;
 
 public class Main implements Config {
 	public static void main(String[] args) {
+		ArrayList<RouteLink> routeLinks = DatabaseQueries.getRouteLinks();
+
+		System.out.println(routeLinks.size() + "\n");
+		for (int i = 0; i < routeLinks.size(); i++) {
+			RouteLink rl = routeLinks.get(i);
+			System.out.println(i);
+			System.out.println("From:" + rl.getFromRoute().getFrom().getId());
+			System.out.println("Via :" + rl.getFromRoute().getTo().getId());
+			System.out.println("Via :" + rl.getToRoute().getFrom().getId());
+			System.out.println("To  :" + rl.getToRoute().getTo().getId());
+			System.out.println("");
+		}
+
+
 		// ArrayList<Segment> stations = DatabaseQueries.getStations();
 		//
 		// Scheduler scheduler = new Scheduler();
@@ -18,15 +31,15 @@ public class Main implements Config {
 		//
 		// System.out.println("alma");
 
-		ArrayList<Route> routes = DatabaseQueries.getRoutes();
-		System.out.println("Routes size: " + routes.size());
-
-		for (int i = 0; i < routes.size(); i++) {
-			Route r = routes.get(i);
-			System.out.println(i);
-			System.out.println("From: " + r.getFrom().getId());
-			System.out.println("To  : " + r.getTo().getId() + "\n");
-		}
+		// ArrayList<Route> routes = DatabaseQueries.getRoutes();
+		// System.out.println("Routes size: " + routes.size());
+		//
+		// for (int i = 0; i < routes.size(); i++) {
+		// Route r = routes.get(i);
+		// System.out.println(i);
+		// System.out.println("From: " + r.getFrom().getId());
+		// System.out.println("To : " + r.getTo().getId() + "\n");
+		// }
 
 		// ArrayList<RouteLink> routes = DatabaseQueries.getRouteLinks();
 		//
