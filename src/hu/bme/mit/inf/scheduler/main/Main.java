@@ -4,32 +4,29 @@ import java.util.ArrayList;
 
 import hu.bme.mit.inf.scheduler.config.Config;
 import hu.bme.mit.inf.scheduler.database.DatabaseQueries;
-import hu.bme.mit.inf.scheduler.model.RouteLink;
+import hu.bme.mit.inf.scheduler.model.Segment;
 
 public class Main implements Config {
 	public static void main(String[] args) {
-		ArrayList<RouteLink> routeLinks = DatabaseQueries.getRouteLinks();
-
-		System.out.println(routeLinks.size() + "\n");
-		for (int i = 0; i < routeLinks.size(); i++) {
-			RouteLink rl = routeLinks.get(i);
-			System.out.println(i);
-			System.out.println("From:" + rl.getFromRoute().getFrom().getId());
-			System.out.println("Via :" + rl.getFromRoute().getTo().getId());
-			System.out.println("Via :" + rl.getToRoute().getFrom().getId());
-			System.out.println("To  :" + rl.getToRoute().getTo().getId());
-			System.out.println("");
-		}
-
-
-		// ArrayList<Segment> stations = DatabaseQueries.getStations();
+		// ArrayList<RouteLink> routeLinks = DatabaseQueries.getRouteLinks();
 		//
-		// Scheduler scheduler = new Scheduler();
-		// scheduler.loadData();
-		//
-		// scheduler.addSchedule(null, stations.get(0), stations.get(2));
-		//
-		// System.out.println("alma");
+		// System.out.println(routeLinks.size() + "\n");
+		// for (int i = 0; i < routeLinks.size(); i++) {
+		// RouteLink rl = routeLinks.get(i);
+		// System.out.println(i);
+		// System.out.println("From:" + rl.getFromRoute().getFrom().getId());
+		// System.out.println("Via :" + rl.getFromRoute().getTo().getId());
+		// System.out.println("Via :" + rl.getToRoute().getFrom().getId());
+		// System.out.println("To :" + rl.getToRoute().getTo().getId());
+		// System.out.println("");
+		// }
+
+		ArrayList<Segment> stations = DatabaseQueries.getStations();
+
+		Scheduler scheduler = new Scheduler();
+		scheduler.loadData();
+
+		scheduler.addSchedule(null, stations.get(1), stations.get(2));
 
 		// ArrayList<Route> routes = DatabaseQueries.getRoutes();
 		// System.out.println("Routes size: " + routes.size());

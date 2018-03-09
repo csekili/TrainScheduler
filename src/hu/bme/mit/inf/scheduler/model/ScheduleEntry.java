@@ -5,9 +5,10 @@ import java.util.ArrayList;
 public class ScheduleEntry {
 	private Train train;
 	private ArrayList<ScheduleSection> sections;
-	private Segment from_station, to_station;
+	private RailRoadElement from_station, to_station;
 
-	public ScheduleEntry(Train train, ArrayList<ScheduleSection> sections, Segment from_station, Segment to_station) {
+	public ScheduleEntry(Train train, ArrayList<ScheduleSection> sections, RailRoadElement from_station,
+			RailRoadElement to_station) {
 		this.train = train;
 		this.sections = sections;
 		this.from_station = from_station;
@@ -30,7 +31,7 @@ public class ScheduleEntry {
 		this.sections = sections;
 	}
 
-	public Segment getFrom_station() {
+	public RailRoadElement getFrom_station() {
 		return from_station;
 	}
 
@@ -38,7 +39,7 @@ public class ScheduleEntry {
 		this.from_station = from_station;
 	}
 
-	public Segment getTo_station() {
+	public RailRoadElement getTo_station() {
 		return to_station;
 	}
 
