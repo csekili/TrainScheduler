@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import hu.bme.mit.inf.scheduler.config.Config;
 import hu.bme.mit.inf.scheduler.database.DatabaseQueries;
+import hu.bme.mit.inf.scheduler.gui.MainWindow;
 import hu.bme.mit.inf.scheduler.model.Segment;
 
 public class Main implements Config {
@@ -65,5 +66,10 @@ public class Main implements Config {
 		// }
 		//
 		// System.out.println(paths.size());
+
+		//ablak kirajzolása, csak ideiglenesen van itt
+		//TODO: ezt átgondolni
+		MainWindow ablak = new MainWindow();
+		ablak.init(args);
 	}
 }
