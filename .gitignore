@@ -1,8 +1,5 @@
 *.class
-
 .settings/**
-
 dependencies/**
-
 target/**
 /bin/

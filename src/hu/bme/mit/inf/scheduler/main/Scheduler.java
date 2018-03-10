@@ -183,13 +183,13 @@ public class Scheduler {
 	private Route getMinWeight(ArrayList<DijkstraHelper> helpers, ArrayList<Route> exceptFixed) {
 		DijkstraHelper minHelper = null;
 		int b = 0;
-		boolean asd = true;
-		while (asd) {
+		boolean firstNodeInFixed = true;
+		while (firstNodeInFixed) {
 			minHelper = helpers.get(b);
-			asd = false;
+			firstNodeInFixed = false;
 			for (Route r : exceptFixed) {
 				if (minHelper.node == r) {
-					asd = true;
+					firstNodeInFixed = true;
 					break;
 				}
 			}

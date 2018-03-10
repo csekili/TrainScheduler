@@ -7,9 +7,10 @@ import hu.bme.mit.inf.scheduler.database.DatabaseQueries;
 import hu.bme.mit.inf.scheduler.model.Segment;
 
 public class Main implements Config {
+	
 	public static void main(String[] args) {
 		// ArrayList<RouteLink> routeLinks = DatabaseQueries.getRouteLinks();
-		//
+
 		// System.out.println(routeLinks.size() + "\n");
 		// for (int i = 0; i < routeLinks.size(); i++) {
 		// RouteLink rl = routeLinks.get(i);
