@@ -10,6 +10,10 @@ public class Route {
 	private boolean enabled;
 	public double weight = 1;
 
+	public boolean equals(Route r) {
+		return r.getFrom().getId() == from.getId() && r.getTo().getId() == to.getId();
+	}
+
 	public Route(Route r) {
 		this(r.paths);
 	}

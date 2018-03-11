@@ -2,11 +2,15 @@ package hu.bme.mit.inf.scheduler.database;
 
 import java.util.ArrayList;
 
+import hu.bme.mit.inf.scheduler.main.DijkstraHelper;
 import hu.bme.mit.inf.scheduler.model.Path;
 import hu.bme.mit.inf.scheduler.model.RailRoadElement;
 import hu.bme.mit.inf.scheduler.model.Route;
 import hu.bme.mit.inf.scheduler.model.RouteLink;
+import hu.bme.mit.inf.scheduler.model.ScheduleEntry;
+import hu.bme.mit.inf.scheduler.model.ScheduleSection;
 import hu.bme.mit.inf.scheduler.model.Segment;
+import hu.bme.mit.inf.scheduler.model.Train;
 import hu.bme.mit.inf.scheduler.model.TurnOut;
 
 public class Calculations {
@@ -272,4 +276,141 @@ public class Calculations {
 		elements.addAll(segments);
 		return elements;
 	}
+
+	//
+	// METHODS FOR DIJKSTRA _ START
+	//
+
+	public static ScheduleEntry shortestRoute(Train train, ArrayList<Route> routes, Route startRoute,
+			ArrayList<Route> destinationRoutes, ArrayList<RouteLink> routeLinks) {
+
+		ArrayList<DijkstraHelper> helpers = new ArrayList<>();
+		for (Route r : routes) {
+			helpers.add(new DijkstraHelper(9999999, r));
+		}
+
+		//
+		Route actualNode = startRoute;
+		ArrayList<Route> fixedNodes = new ArrayList<>();
+		DijkstraHelper actualHelper = getDijkstraHelperOfNode(startRoute, helpers);
+		actualHelper.weight = 0;
+		for (int i = 0; i <= routes.size(); i++) {
+			// printHelpers(helpers);
+			if (i > 0)
+				actualNode = getMinWeight(helpers, fixedNodes);
+			if (actualNode == null)
+				continue;
+			actualHelper = getDijkstraHelperOfNode(actualNode, helpers);
+			ArrayList<RouteLink> neighbours = getNeighbours(routes, actualNode, routeLinks, fixedNodes);
+			for (RouteLink rl : neighbours) {
+				DijkstraHelper helper = getDijkstraHelperOfNode(rl.getToRoute(), helpers);
+				if (helper == null)
+					continue;
+				helper.setNewValues(actualHelper.weight + rl.getToRoute().weight, rl);
+			}
+			fixedNodes.add(actualNode);
+		}
+
+		DijkstraHelper minhelper = getDijkstraHelperOfNode(destinationRoutes.get(0), helpers);
+		for (int i = 1; i < destinationRoutes.size(); i++) {
+			Route r = destinationRoutes.get(i);
+			DijkstraHelper helper = getDijkstraHelperOfNode(r, helpers);
+			if (minhelper.weight == -1) {
+				minhelper = helper;
+				continue;
+			}
+
+			if (helper.weight != -1 && helper.weight < minhelper.weight)
+				minhelper = helper;
+		}
+
+		//
+		ArrayList<ScheduleSection> sections = new ArrayList<>();
+
+		RouteLink lastRouteLink = minhelper.fromRouteLink;
+		sections.add(new ScheduleSection(lastRouteLink.getToRoute(), null, null));
+		sections.add(new ScheduleSection(lastRouteLink.getFromRoute(), null, null));
+		while (true) {
+			if (lastRouteLink.getFromRoute() == startRoute)
+				break;
+			lastRouteLink = getDijkstraHelperOfNode(lastRouteLink.getFromRoute(), helpers).fromRouteLink;
+			sections.add(new ScheduleSection(lastRouteLink.getFromRoute(), null, null));
+		}
+
+		ScheduleEntry solution = new ScheduleEntry(train, sections, startRoute.getFrom(),
+				destinationRoutes.get(0).getTo());
+
+		return solution;
+	}
+
+	private static DijkstraHelper getDijkstraHelperOfNode(Route r, ArrayList<DijkstraHelper> helpers) {
+		for (DijkstraHelper h : helpers) {
+			if (h.node.equals(r))
+				return h;
+		}
+		return null;
+	}
+
+	private static ArrayList<RouteLink> getNeighbours(ArrayList<Route> routes, Route route,
+			ArrayList<RouteLink> routeLinks, ArrayList<Route> fixedNodes) {
+		ArrayList<RouteLink> data = new ArrayList<>();
+		for (RouteLink rl : routeLinks) {
+			if (rl.getFromRoute().equals(route)) {
+				data.add(rl);
+			}
+		}
+		return data;
+	}
+
+	private static Route getMinWeight(ArrayList<DijkstraHelper> helpers, ArrayList<Route> exceptFixed) {
+		DijkstraHelper minHelper = null;
+		int index = 0;
+		boolean firstNodeInFixed = true;
+		while (firstNodeInFixed) {
+			if (index >= helpers.size())
+				return null;
+			minHelper = helpers.get(index);
+			firstNodeInFixed = false;
+			for (Route r : exceptFixed) {
+				if (minHelper.node.equals(r)) {
+					firstNodeInFixed = true;
+					break;
+				}
+			}
+			index++;
+		}
+		for (DijkstraHelper h : helpers) {
+			if (h.weight < minHelper.weight) {
+				boolean bennevan = false;
+				for (Route r : exceptFixed) {
+					if (h.node.equals(r))
+						bennevan = true;
+				}
+				if (!bennevan) {
+					minHelper = h;
+				}
+			}
+		}
+		return minHelper.node;
+	}
+
+	public static ArrayList<Route> getAvailableRoutesToStation(Segment toStation, ArrayList<Route> routes) {
+		ArrayList<Route> data = new ArrayList<>();
+		for (Route r : routes)
+			if (r.getTo().getId() == toStation.getId())
+				data.add(r);
+		return data;
+	}
+
+	public static ArrayList<Route> getAvailableRoutesFromStation(Segment fromStation, ArrayList<Route> routes) {
+		ArrayList<Route> data = new ArrayList<>();
+		for (Route r : routes)
+			if (r.getFrom().getId() == fromStation.getId())
+				data.add(r);
+		return data;
+	}
+
+	//
+	// METHODS FOR DIJKSTRA _ END
+	//
 }

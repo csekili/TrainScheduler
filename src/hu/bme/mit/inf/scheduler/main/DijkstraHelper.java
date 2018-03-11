@@ -14,7 +14,7 @@ public class DijkstraHelper {
 	}
 
 	public void setNewValues(double totalNewWeight, RouteLink fromRouteLink) {
-		if (weight == -1 || totalNewWeight < weight) {
+		if (totalNewWeight < weight) {
 			weight = totalNewWeight;
 			this.fromRouteLink = fromRouteLink;
 			this.fromNode = fromRouteLink.getFromRoute();

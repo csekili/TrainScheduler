@@ -12,6 +12,11 @@ public class RouteLink {
 		this.s = s;
 	}
 
+	public boolean equals(RouteLink rl) {
+		return rl.getFromRoute().equals(fromRoute) && rl.getToRoute().equals(toRoute)
+				&& viaNode.equals(rl.getViaNode());
+	}
+
 	public RailRoadElement getViaNode() {
 		return viaNode;
 	}
