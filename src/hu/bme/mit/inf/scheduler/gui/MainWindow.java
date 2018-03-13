@@ -10,10 +10,12 @@ import hu.bme.mit.inf.scheduler.model.Segment;
 import hu.bme.mit.inf.scheduler.model.Train;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -53,7 +55,7 @@ public class MainWindow extends Application {
         primaryStage.getIcons().add(new Image("hu/bme/mit/inf/scheduler/gui/icon16.png"));
         primaryStage.getIcons().add(new Image("hu/bme/mit/inf/scheduler/gui/icon32.png"));
         primaryStage.setMinWidth(500);
-        primaryStage.setMinHeight(300);
+        primaryStage.setMinHeight(490);
         primaryStage.setOnCloseRequest(new eh_FormClosing());
 
         BorderPane root = new BorderPane();
@@ -119,25 +121,56 @@ public class MainWindow extends Application {
         //--------------------------------------------------------------------------------------------------------------
         VBox drawPane = new VBox();
         drawPane.setAlignment(Pos.CENTER);
+        drawPane.setPadding(new Insets(0, 30, 0, 30));
+        drawPane.setSpacing(20);
         root.setCenter(drawPane);
 
         //creating current route placeholder
         routeHolder = new HBox();
         routeHolder.setFillHeight(false);
-        routeHolder.setAlignment(Pos.CENTER);
-        routeHolder.setPadding(new Insets(20, 10, 20, 10));
+        routeHolder.setAlignment(Pos.TOP_CENTER);
+        routeHolder.setStyle("-fx-border-width: 0 0 1 0; -fx-border-color: #777777");
+        routeHolder.setPadding(new Insets(20, 10, 15, 10));
         drawPane.getChildren().add(routeHolder);
 
         //drawing map of world
-        /*ImageView railroadMap = new ImageView();
-        railroadMap.setImage(new Image(""));
-        drawPane.getChildren().add(railroadMap);*/
+        HBox mapContainer = new HBox();
+        //mapContainer.fillHeightProperty().bind(primaryStage.heightProperty());
+
+        ImageView railroadMap = new ImageView();
+        railroadMap.setImage(new Image("hu/bme/mit/inf/scheduler/gui/map.png"));
+        railroadMap.setPreserveRatio(true);
+        railroadMap.setSmooth(true);
+        railroadMap.setFitWidth(800);
+        mapContainer.setAlignment(Pos.CENTER);
+        mapContainer.getChildren().add(railroadMap);
+        drawPane.getChildren().add(mapContainer);
+
+        //IDK what this does
+        primaryStage.widthProperty().addListener((obs, oldVal, newVal) -> {
+            double maxAvailableHeight = primaryStage.getHeight()-370;
+            if (maxAvailableHeight/800*1920 > primaryStage.getWidth()-50) {
+                railroadMap.setFitWidth(primaryStage.getWidth()-50);
+            } else {
+                railroadMap.setFitHeight(maxAvailableHeight);
+            }
+        });
+
+        primaryStage.heightProperty().addListener((obs, oldVal, newVal) -> {
+            double maxAvailableHeight = primaryStage.getHeight()-370;
+            if (maxAvailableHeight/800*1920 > primaryStage.getWidth()-50) {
+                railroadMap.setFitWidth(primaryStage.getWidth()-50);
+            } else {
+                railroadMap.setFitHeight(maxAvailableHeight);
+            }
+        });
 
 
         //--------------------------------------------------------------------------------------------------------------
         //showing window
         //--------------------------------------------------------------------------------------------------------------
         primaryStage.show();
+
     }
 
     public static void init(String[] args) {
