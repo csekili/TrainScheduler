@@ -148,6 +148,9 @@ public class MainWindow extends Application {
     private static void prepareStart(String[] args) {launch(args);}
 
     public void drawRoute(ScheduleEntry e) {
+        //reset spinner
+        Platform.runLater(() -> spinner.setVisible(false));
+
         //filling up hashmap of route
         for(int i=0; i<e.getRailRoadElements().size()-1; i++) {
             route.add(new SectionHolder(String.valueOf(e.getRailRoadElements().get(i).getId())));
@@ -202,12 +205,75 @@ public class MainWindow extends Application {
 
     private class eh_planRoute implements EventHandler<ActionEvent> {
 
+        ArrayList<Integer> stationIDs = new ArrayList<>();
+
+        public eh_planRoute() {
+            stationIDs.add(15);
+            stationIDs.add(18);
+            stationIDs.add(19);
+            stationIDs.add(22);
+        }
+
         @Override
         public void handle(ActionEvent event) {
+            //reset
+            errorText.setVisible(false);
+            spinner.setVisible(false);
+            routeHolder.getChildren().clear();
+
+            //error checking
+            if (!IDseemsValid(from.getText()) || !IDseemsValid(to.getText())) {
+                errorText.setText("Sorry, these are not stations!");
+                errorText.setVisible(true);
+                return;
+            }
+
+            //spinner
             spinner.setVisible(true);
 
             //TODO: plan route
             System.out.println("Planning route from " + from.getText() + " to " + to.getText());
+
+            int fromid = -1;
+            try {
+                fromid = Integer.parseInt(from.getText());
+            } catch (Exception e1) {
+                try {
+                    fromid = Integer.parseInt(from.getText().substring(1));
+                } catch (Exception e2) {}
+            }
+
+            int toid = -1;
+            try {
+                toid = Integer.parseInt(to.getText());
+            } catch (Exception e1) {
+                try {
+                    toid = Integer.parseInt(to.getText().substring(1));
+                } catch (Exception e2) {}
+            }
+
+            Main.addScheduleEntry(null, fromid, toid);
+        }
+
+        private boolean IDseemsValid(String ID) {
+            if (ID.length() == 0) return false;
+
+            int id;
+            try {
+                id = Integer.parseInt(ID);
+            } catch (Exception e) {
+                if (!ID.startsWith("S")) return false;
+
+                try {
+                    id = Integer.parseInt(ID.substring(1));
+                } catch (Exception e2) {
+                    return false;
+                }
+            }
+
+            if (!stationIDs.contains(id)) return false;
+
+            return true;
         }
     }
 }

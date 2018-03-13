@@ -7,6 +7,7 @@ import hu.bme.mit.inf.scheduler.database.DatabaseQueries;
 import hu.bme.mit.inf.scheduler.gui.MainWindow;
 import hu.bme.mit.inf.scheduler.model.ScheduleEntry;
 import hu.bme.mit.inf.scheduler.model.Segment;
+import hu.bme.mit.inf.scheduler.model.Train;
 
 public class Main implements Config {
 
@@ -104,6 +105,10 @@ public class Main implements Config {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static void addScheduleEntry(Train t, int fromID, int toID){
+		//scheduler.addSchedule(...);
 	}
 
 	private static void initScheduler() {
