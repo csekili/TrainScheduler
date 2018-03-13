@@ -252,7 +252,8 @@ public class MainWindow extends Application {
                 } catch (Exception e2) {}
             }
 
-            Main.addScheduleEntry(null, fromid, toid);
+            new planner(fromid, toid).start();
+
         }
 
         private boolean IDseemsValid(String ID) {
@@ -274,6 +275,17 @@ public class MainWindow extends Application {
             if (!stationIDs.contains(id)) return false;
 
             return true;
+        }
+
+        private class planner extends Thread {
+            int fromid, toid;
+
+            public planner(int from, int to) {fromid=from; toid=to;}
+
+            public void run() {
+                Main.addScheduleEntry(null, fromid, toid);
+            }
+
         }
     }
 }
