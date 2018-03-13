@@ -5,6 +5,7 @@ import com.jfoenix.controls.JFXSpinner;
 import com.jfoenix.controls.JFXTextField;
 import hu.bme.mit.inf.scheduler.model.ScheduleEntry;
 import hu.bme.mit.inf.scheduler.model.Segment;
+import hu.bme.mit.inf.scheduler.model.Train;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -22,6 +23,8 @@ import java.util.HashMap;
 
 
 public class MainWindow extends Application {
+
+    HBox routeHolder;
 
     private HashMap<Integer, SectionHolder> route = new HashMap<>();
 
@@ -93,7 +96,7 @@ public class MainWindow extends Application {
         //--------------------------------------------------------------------------------------------------------------
         //creating content placeholder
         //--------------------------------------------------------------------------------------------------------------
-        HBox routeHolder = new HBox();
+        routeHolder = new HBox();
         routeHolder.setFillHeight(false);
         routeHolder.setAlignment(Pos.CENTER);
         root.setCenter(routeHolder);
@@ -105,6 +108,7 @@ public class MainWindow extends Application {
         routeHolder.getChildren().add(new SectionHolder("S18").getPanel());
         routeHolder.getChildren().add(new EndSectionHolder("S4").getPanel());
         */
+
 
 
         //--------------------------------------------------------------------------------------------------------------
@@ -122,8 +126,15 @@ public class MainWindow extends Application {
 
     public void drawRoute(ScheduleEntry e) {
         //filling up hashmap of route
-        for(int i=0; i<e.getSegments().size()-1; i++) {
-            route.put(e.getSegments().get(i).getId(), new SectionHolder("S" + e.getSegments().get(i).getId()));
+        for(int i=0; i<e.getRailRoadElements().size()-1; i++) {
+            route.put(e.getRailRoadElements().get(i).getId(), new SectionHolder("S" + e.getRailRoadElements().get(i).getId()));
+        }
+        route.put(e.getRailRoadElements().get(e.getRailRoadElements().size()-1).getId(), new EndSectionHolder("S" + e.getRailRoadElements().get(e.getRailRoadElements().size()-1).getId()));
+
+        //drawing route on screen
+        routeHolder.getChildren().clear();
+        for(SectionHolder h : route.values()) {
+            routeHolder.getChildren().add(h.getPanel());
         }
     }
 }
