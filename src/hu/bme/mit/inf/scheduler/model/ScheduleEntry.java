@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class ScheduleEntry {
 	private Train train;
 	private ArrayList<ScheduleSection> sections;
-	private ArrayList<Segment> segments;
+	private ArrayList<RailRoadElement> railRoadElements;
 	private RailRoadElement from_station, to_station;
 
 	public ScheduleEntry(Train train, ArrayList<ScheduleSection> sections, RailRoadElement from_station,
@@ -14,6 +14,7 @@ public class ScheduleEntry {
 		this.sections = sections;
 		this.from_station = from_station;
 		this.to_station = to_station;
+		setSegments();
 	}
 
 	public Train getTrain() {
@@ -56,7 +57,19 @@ public class ScheduleEntry {
 		return w;
 	}
 
-	public ArrayList<Segment> getSegments() {
-		return segments;
+	public ArrayList<RailRoadElement> getRailRoadElements() {
+		return railRoadElements;
+	}
+
+	private void setSegments() {
+		railRoadElements = new ArrayList<>();
+		for (int i = 0; i < sections.size(); i++) {
+			ScheduleSection s = sections.get(i);
+			railRoadElements.add(s.getRoute().getFrom());
+			if (i == sections.size() - 1) {
+				railRoadElements.add(s.getRoute().getTo());
+			}
+		}
+		
 	}
 }
