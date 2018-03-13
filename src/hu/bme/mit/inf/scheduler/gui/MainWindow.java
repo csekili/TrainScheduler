@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXSpinner;
 import com.jfoenix.controls.JFXTextField;
 import hu.bme.mit.inf.scheduler.model.ScheduleEntry;
+import hu.bme.mit.inf.scheduler.model.Segment;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -120,7 +121,9 @@ public class MainWindow extends Application {
     private void prepareStart(String[] args) {launch(args);}
 
     public void drawRoute(ScheduleEntry e) {
-        //TODO: megírni
-
+        //filling up hashmap of route
+        for(int i=0; i<e.getSegments().size()-1; i++) {
+            route.put(e.getSegments().get(i).getId(), new SectionHolder("S" + e.getSegments().get(i).getId()));
+        }
     }
 }
