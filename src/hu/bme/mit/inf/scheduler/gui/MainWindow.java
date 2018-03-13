@@ -17,8 +17,13 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.util.HashMap;
+
 
 public class MainWindow extends Application {
+
+    private HashMap<Integer, SectionHolder> route = new HashMap<>();
+
     @Override
     public void start(Stage primaryStage) throws Exception {
 
@@ -92,13 +97,13 @@ public class MainWindow extends Application {
         routeHolder.setAlignment(Pos.CENTER);
         root.setCenter(routeHolder);
 
-        //testing image handling TODO: delete this
+        /*//testing image handling TODO: delete this
         routeHolder.getChildren().add(new SectionHolder("S12").getPanel());
         SectionHolder itt = new SectionHolder("S39"); itt.setTrainHere(true); routeHolder.getChildren().add(itt.getPanel());
         routeHolder.getChildren().add(new SectionHolder("S42").getPanel());
         routeHolder.getChildren().add(new SectionHolder("S18").getPanel());
         routeHolder.getChildren().add(new EndSectionHolder("S4").getPanel());
-
+        */
 
 
         //--------------------------------------------------------------------------------------------------------------
@@ -116,5 +121,6 @@ public class MainWindow extends Application {
 
     public void drawRoute(ScheduleEntry e) {
         //TODO: megírni
+
     }
 }
