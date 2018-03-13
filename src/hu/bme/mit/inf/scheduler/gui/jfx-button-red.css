@@ -16,22 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-#profiletext {
-    -fx-fill: rgb(114, 0, 0);
-}
 
 .jfx-button:armed,
 .jfx-button:hover,
 .jfx-button:focused,
 .jfx-button {
-    -fx-background-color: TRANSPARENT, TRANSPARENT, TRANSPARENT, rgb(114, 0, 0);
+    -fx-background-color: TRANSPARENT, TRANSPARENT, TRANSPARENT, #303f9f;
     -fx-text-fill: #ffffff;
     -fx-background-radius: 3px;
     -fx-background-insets: 0px;
 }
 
 .jfx-text-field {
-    -jfx-focus-color: rgb(114, 0, 0);
+    -jfx-focus-color: #001970;
     -jfx-unfocus-color: #4d4d4d;
     -fx-padding: 0.333333em 0 0.333333em 0;
 }
@@ -56,7 +53,7 @@
 }
 
 .jfx-password-field {
-    -jfx-focus-color: rgb(114, 0, 0);
+    -jfx-focus-color: #001970;
     -jfx-unfocus-color: #4d4d4d;
     -fx-padding: 0.333333em 0 0.333333em 0;
 }

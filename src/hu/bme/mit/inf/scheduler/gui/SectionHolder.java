@@ -1,9 +1,11 @@
 package hu.bme.mit.inf.scheduler.gui;
 
+import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 
 
 public class SectionHolder {
@@ -14,8 +16,11 @@ public class SectionHolder {
     ImageView sectionImage = new ImageView();
     ImageView trainImage;
 
-    public SectionHolder(String name) {
-        sectionName=name;
+    public SectionHolder(String id) {
+        sectionName=(id.length()<2 ? "  S"+id : " S"+id);
+
+        //panel.setStyle("-fx-border-color: #000000;");
+        panel.setVgap(8);
 
         trainImage = new ImageView();
         trainImage.setImage(new Image("hu/bme/mit/inf/scheduler/gui/Train.png"));
@@ -26,7 +31,7 @@ public class SectionHolder {
         panel.add(sectionImage, 0, 1);
 
         Text nameText = new Text(sectionName);
-        nameText.setStyle("-fx-font-family: Roboto, \"Segoe UI\",  sans-serif; -fx-font-size: 10px;");
+        nameText.setStyle("-fx-font-family: Roboto, \"Segoe UI\",  sans-serif; -fx-font-size: 18px; -fx-text-fill: #001970");
         panel.add(nameText, 0, 2);
 
     }
@@ -37,6 +42,8 @@ public class SectionHolder {
 
     void setTrainHere(boolean isHere) {
         isTrainHere = isHere;
-        trainImage.setVisible(isHere);
+        Platform.runLater(() -> trainImage.setVisible(isHere));
     }
+
+    String getID() {return sectionName;}
 }

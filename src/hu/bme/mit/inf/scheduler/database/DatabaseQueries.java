@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import hu.bme.mit.inf.scheduler.config.Config;
+import hu.bme.mit.inf.scheduler.database.Calculations;
+import hu.bme.mit.inf.scheduler.database.Database;
 import hu.bme.mit.inf.scheduler.model.Path;
 import hu.bme.mit.inf.scheduler.model.RailRoadElement;
 import hu.bme.mit.inf.scheduler.model.Route;

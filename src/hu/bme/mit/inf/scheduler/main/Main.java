@@ -7,6 +7,7 @@ import hu.bme.mit.inf.scheduler.database.DatabaseQueries;
 import hu.bme.mit.inf.scheduler.gui.MainWindow;
 import hu.bme.mit.inf.scheduler.model.ScheduleEntry;
 import hu.bme.mit.inf.scheduler.model.Segment;
+import hu.bme.mit.inf.scheduler.model.Train;
 
 public class Main implements Config {
 
@@ -91,13 +92,23 @@ public class Main implements Config {
 		mw.drawRoute(scheduler.getSchedules().getEntry(0));
 	}
 
+	public static boolean windowClosed() {
+		return true;
+		//TODO: finish process
+	}
+
 	private static void initWindow() {
-		mw = new MainWindow();
+		//mw = new MainWindow();
 		try {
-			mw.init(null);
+			MainWindow.init(null);
+			mw=MainWindow.getWindow();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static void addScheduleEntry(Train t, int fromID, int toID){
+		//scheduler.addSchedule(...);
 	}
 
 	private static void initScheduler() {
