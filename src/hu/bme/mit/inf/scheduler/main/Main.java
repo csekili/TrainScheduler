@@ -4,9 +4,14 @@ import java.util.ArrayList;
 
 import hu.bme.mit.inf.scheduler.config.Config;
 import hu.bme.mit.inf.scheduler.database.DatabaseQueries;
+import hu.bme.mit.inf.scheduler.gui.MainWindow;
+import hu.bme.mit.inf.scheduler.model.ScheduleEntry;
 import hu.bme.mit.inf.scheduler.model.Segment;
 
 public class Main implements Config {
+
+	private static Scheduler scheduler;
+	private static MainWindow mw;
 
 	private static void test() {
 		// Open a new graphical window
@@ -32,14 +37,14 @@ public class Main implements Config {
 		// --------------------------------------------
 
 		// Test Scheduler class, adding a new ScheduleEntry
-		ArrayList<Segment> stations = DatabaseQueries.getStations();
-
-		Scheduler scheduler = new Scheduler();
-		scheduler.loadData();
-
-		scheduler.addSchedule(null, stations.get(1), stations.get(2));
-
-		System.out.println("");
+		// ArrayList<Segment> stations = DatabaseQueries.getStations();
+		//
+		// Scheduler scheduler = new Scheduler();
+		// scheduler.loadData();
+		//
+		// scheduler.addSchedule(null, stations.get(1), stations.get(2));
+		//
+		// System.out.println("");
 		// --------------------------------------------
 
 		// Test routes
@@ -75,5 +80,28 @@ public class Main implements Config {
 	public static void main(String[] args) {
 		// Just for testing
 		test();
+		initScheduler();
+		initWindow();
+
+		// GUI TEST
+		ArrayList<Segment> stations = DatabaseQueries.getStations();
+
+		scheduler.addSchedule(null, stations.get(0), stations.get(2));
+		
+		mw.drawRoute(scheduler.getSchedules().getEntry(0));
+	}
+
+	private static void initWindow() {
+		mw = new MainWindow();
+		try {
+			mw.init(null);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static void initScheduler() {
+		scheduler = new Scheduler();
+		scheduler.loadData();
 	}
 }
