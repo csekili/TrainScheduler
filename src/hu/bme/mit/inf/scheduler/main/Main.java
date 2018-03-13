@@ -91,10 +91,16 @@ public class Main implements Config {
 		mw.drawRoute(scheduler.getSchedules().getEntry(0));
 	}
 
+	public static boolean windowClosed() {
+		return true;
+		//TODO: finish process
+	}
+
 	private static void initWindow() {
-		mw = new MainWindow();
+		//mw = new MainWindow();
 		try {
-			mw.init(null);
+			MainWindow.init(null);
+			mw=MainWindow.getWindow();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

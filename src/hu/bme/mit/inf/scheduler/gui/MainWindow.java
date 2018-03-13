@@ -44,7 +44,10 @@ public class MainWindow extends Application {
         //--------------------------------------------------------------------------------------------------------------
 
         primaryStage.setTitle("Train Tracker");
+        primaryStage.getIcons().add(new Image("hu/bme/mit/inf/scheduler/gui/icon16.png"));
+        primaryStage.getIcons().add(new Image("hu/bme/mit/inf/scheduler/gui/icon32.png"));
         primaryStage.setMinWidth(500);
+        primaryStage.setMinHeight(300);
         primaryStage.setOnCloseRequest(new eh_FormClosing());
 
         BorderPane root = new BorderPane();
@@ -138,9 +141,9 @@ public class MainWindow extends Application {
     public void drawRoute(ScheduleEntry e) {
         //filling up hashmap of route
         for(int i=0; i<e.getRailRoadElements().size()-1; i++) {
-            route.put(e.getRailRoadElements().get(i).getId(), new SectionHolder("S" + e.getRailRoadElements().get(i).getId()));
+            route.put(e.getRailRoadElements().get(i).getId(), new SectionHolder( (e.getRailRoadElements().get(i).getId() < 10 ? " " : "") + " S" + e.getRailRoadElements().get(i).getId()));
         }
-        route.put(e.getRailRoadElements().get(e.getRailRoadElements().size()-1).getId(), new EndSectionHolder("S" + e.getRailRoadElements().get(e.getRailRoadElements().size()-1).getId()));
+        route.put(e.getRailRoadElements().get(e.getRailRoadElements().size()-1).getId(), new EndSectionHolder((e.getRailRoadElements().get(e.getRailRoadElements().size()-1).getId() < 10 ? " " : "") + " S" + e.getRailRoadElements().get(e.getRailRoadElements().size()-1).getId()));
 
         //drawing route on screen
         Platform.runLater(() -> routeHolder.getChildren().clear());

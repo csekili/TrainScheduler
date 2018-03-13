@@ -18,6 +18,8 @@ public class SectionHolder {
     public SectionHolder(String name) {
         sectionName=name;
 
+        //panel.setStyle("-fx-border-color: #000000;");
+
         trainImage = new ImageView();
         trainImage.setImage(new Image("hu/bme/mit/inf/scheduler/gui/Train.png"));
         trainImage.setVisible(false);
@@ -27,7 +29,7 @@ public class SectionHolder {
         panel.add(sectionImage, 0, 1);
 
         Text nameText = new Text(sectionName);
-        nameText.setStyle("-fx-font-family: Roboto, \"Segoe UI\",  sans-serif; -fx-font-size: 17px; -fx-text-fill: #001970");
+        nameText.setStyle("-fx-font-family: Roboto, \"Segoe UI\",  sans-serif; -fx-font-size: 18px; -fx-text-fill: #001970");
         panel.add(nameText, 0, 2);
 
     }
