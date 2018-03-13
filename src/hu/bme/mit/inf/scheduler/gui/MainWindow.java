@@ -152,6 +152,7 @@ public class MainWindow extends Application {
         Platform.runLater(() -> spinner.setVisible(false));
 
         //filling up hashmap of route
+        route.clear(); //reset route
         for(int i=0; i<e.getRailRoadElements().size()-1; i++) {
             route.add(new SectionHolder(String.valueOf(e.getRailRoadElements().get(i).getId())));
         }

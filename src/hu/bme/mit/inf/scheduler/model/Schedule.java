@@ -42,6 +42,8 @@ public class Schedule {
 	}
 
 	public void addScheduleEntry(ScheduleEntry entry) {
+		//TODO tobb utvonalra ez nem mukodik
+		entries.clear();
 		entries.add(entry);
 	}
 }
