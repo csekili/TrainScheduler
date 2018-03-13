@@ -1,5 +1,6 @@
 package hu.bme.mit.inf.scheduler.gui;
 
+import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -19,7 +20,7 @@ public class SectionHolder {
         sectionName=(id.length()<2 ? "  S"+id : " S"+id);
 
         //panel.setStyle("-fx-border-color: #000000;");
-        System.out.println("Created SectionHolder " + sectionName);
+        panel.setVgap(8);
 
         trainImage = new ImageView();
         trainImage.setImage(new Image("hu/bme/mit/inf/scheduler/gui/Train.png"));
@@ -41,7 +42,7 @@ public class SectionHolder {
 
     void setTrainHere(boolean isHere) {
         isTrainHere = isHere;
-        trainImage.setVisible(isHere);
+        Platform.runLater(() -> trainImage.setVisible(isHere));
     }
 
     String getID() {return sectionName;}

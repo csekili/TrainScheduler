@@ -4,11 +4,13 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXSpinner;
 import com.jfoenix.controls.JFXTextField;
 import hu.bme.mit.inf.scheduler.main.Main;
+import hu.bme.mit.inf.scheduler.model.RailRoadElement;
 import hu.bme.mit.inf.scheduler.model.ScheduleEntry;
 import hu.bme.mit.inf.scheduler.model.Segment;
 import hu.bme.mit.inf.scheduler.model.Train;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -29,8 +31,11 @@ import java.util.HashMap;
 
 public class MainWindow extends Application {
 
-    HBox routeHolder;
-    Text errorText;
+    private HBox routeHolder;
+    private Text errorText;
+    private JFXTextField from;
+    private JFXTextField to;
+    private JFXSpinner spinner;
 
     private ArrayList<SectionHolder> route = new ArrayList<>();
     private static MainWindow mw; //:(
@@ -72,18 +77,21 @@ public class MainWindow extends Application {
         t1.setStyle("-fx-font-family: Roboto, \"Segoe UI\",  sans-serif; -fx-font-size: 15px;");
         controlBar.add(t1, 0, 0);
 
-        JFXTextField from = new JFXTextField();
+        from = new JFXTextField();
+        from.setOnAction(new eh_planRoute());
         controlBar.add(from, 1, 0);
 
         Text t2 = new Text("to");
         t2.setStyle("-fx-font-family: Roboto, \"Segoe UI\",  sans-serif; -fx-font-size: 15px;");
         controlBar.add(t2, 2, 0);
 
-        JFXTextField to = new JFXTextField();
+        to = new JFXTextField();
+        to.setOnAction(new eh_planRoute());
         controlBar.add(to, 3, 0);
 
         JFXButton goButton = new JFXButton("Go!");
         goButton.setStyle("-fx-pref-width: 80px;");
+        goButton.setOnAction(new eh_planRoute());
         controlBar.add(goButton, 4, 0);
 
 
@@ -95,7 +103,7 @@ public class MainWindow extends Application {
         bottomBar.setAlignment(Pos.BASELINE_CENTER);
         root.setBottom(bottomBar);
 
-        JFXSpinner spinner = new JFXSpinner();
+        spinner = new JFXSpinner();
         spinner.setVisible(false);
         bottomBar.getChildren().add(spinner);
 
@@ -153,6 +161,13 @@ public class MainWindow extends Application {
         }
     }
 
+    public void setTrain(RailRoadElement here) {
+        for (SectionHolder i : route) {
+            String strID = (here.getId() < 10 ? " " : "") + " S" + String.valueOf(here.getId());
+            i.setTrainHere(i.getID().equals(strID));
+        }
+    }
+
     public static MainWindow getWindow() {
         while(mw  == null){
             try {
@@ -182,6 +197,17 @@ public class MainWindow extends Application {
             errorText.setText("Couldn't terminate application! Please try again.");
             errorText.setVisible(true);
             event.consume();
+        }
+    }
+
+    private class eh_planRoute implements EventHandler<ActionEvent> {
+
+        @Override
+        public void handle(ActionEvent event) {
+            spinner.setVisible(true);
+
+            //TODO: plan route
+            System.out.println("Planning route from " + from.getText() + " to " + to.getText());
         }
     }
 }
