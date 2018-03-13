@@ -15,10 +15,11 @@ public class SectionHolder {
     ImageView sectionImage = new ImageView();
     ImageView trainImage;
 
-    public SectionHolder(String name) {
-        sectionName=name;
+    public SectionHolder(String id) {
+        sectionName=(id.length()<2 ? "  S"+id : " S"+id);
 
         //panel.setStyle("-fx-border-color: #000000;");
+        System.out.println("Created SectionHolder " + sectionName);
 
         trainImage = new ImageView();
         trainImage.setImage(new Image("hu/bme/mit/inf/scheduler/gui/Train.png"));
@@ -42,4 +43,6 @@ public class SectionHolder {
         isTrainHere = isHere;
         trainImage.setVisible(isHere);
     }
+
+    String getID() {return sectionName;}
 }

@@ -23,6 +23,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 
@@ -31,7 +32,7 @@ public class MainWindow extends Application {
     HBox routeHolder;
     Text errorText;
 
-    private HashMap<Integer, SectionHolder> route = new HashMap<>();
+    private ArrayList<SectionHolder> route = new ArrayList<>();
     private static MainWindow mw; //:(
 
     @Override
@@ -141,13 +142,13 @@ public class MainWindow extends Application {
     public void drawRoute(ScheduleEntry e) {
         //filling up hashmap of route
         for(int i=0; i<e.getRailRoadElements().size()-1; i++) {
-            route.put(e.getRailRoadElements().get(i).getId(), new SectionHolder( (e.getRailRoadElements().get(i).getId() < 10 ? " " : "") + " S" + e.getRailRoadElements().get(i).getId()));
+            route.add(new SectionHolder(String.valueOf(e.getRailRoadElements().get(i).getId())));
         }
-        route.put(e.getRailRoadElements().get(e.getRailRoadElements().size()-1).getId(), new EndSectionHolder((e.getRailRoadElements().get(e.getRailRoadElements().size()-1).getId() < 10 ? " " : "") + " S" + e.getRailRoadElements().get(e.getRailRoadElements().size()-1).getId()));
+        route.add(new EndSectionHolder(String.valueOf(e.getRailRoadElements().get(e.getRailRoadElements().size()-1).getId())));
 
         //drawing route on screen
         Platform.runLater(() -> routeHolder.getChildren().clear());
-        for(SectionHolder h : route.values()) {
+        for(SectionHolder h : route) {
             Platform.runLater(() -> routeHolder.getChildren().add(h.getPanel()));
         }
     }
