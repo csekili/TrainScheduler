@@ -326,6 +326,7 @@ public class Calculations {
 
 		//
 		ArrayList<ScheduleSection> sections = new ArrayList<>();
+		ArrayList<ScheduleSection> sections2 = new ArrayList<>();
 
 		RouteLink lastRouteLink = minhelper.fromRouteLink;
 		sections.add(new ScheduleSection(lastRouteLink.getToRoute(), null, null));
@@ -337,7 +338,11 @@ public class Calculations {
 			sections.add(new ScheduleSection(lastRouteLink.getFromRoute(), null, null));
 		}
 
-		ScheduleEntry solution = new ScheduleEntry(train, sections, startRoute.getFrom(),
+		for(ScheduleSection s : sections) {
+			sections2.add(s);
+		}
+		
+		ScheduleEntry solution = new ScheduleEntry(train, sections2, startRoute.getFrom(),
 				destinationRoutes.get(0).getTo());
 
 		return solution;
