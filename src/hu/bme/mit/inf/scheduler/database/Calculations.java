@@ -338,10 +338,11 @@ public class Calculations {
 			sections.add(new ScheduleSection(lastRouteLink.getFromRoute(), null, null));
 		}
 
-		for(ScheduleSection s : sections) {
+		for (int i = sections.size() - 1; i >= 0; i--) {
+			ScheduleSection s = sections.get(i);
 			sections2.add(s);
 		}
-		
+
 		ScheduleEntry solution = new ScheduleEntry(train, sections2, startRoute.getFrom(),
 				destinationRoutes.get(0).getTo());
 

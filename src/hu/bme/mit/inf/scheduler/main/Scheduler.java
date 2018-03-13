@@ -76,7 +76,6 @@ public class Scheduler {
 			}
 		}
 		schedules.addScheduleEntry(possibleEntries.get(mini));
-
 	}
 
 	public ArrayList<Segment> getStations(){

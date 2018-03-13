@@ -117,6 +117,7 @@ public class Main implements Config {
 		if (fromStation == null || toStation == null)
 			return;
 		scheduler.addSchedule(t, fromStation, toStation);
+		mw.drawRoute(scheduler.getSchedules().getEntry(0));
 	}
 
 	private static void initScheduler() {
