@@ -39,6 +39,7 @@ public class Main implements Config {
 
 		scheduler.addSchedule(null, stations.get(1), stations.get(2));
 
+		System.out.println("");
 		// --------------------------------------------
 
 		// Test routes

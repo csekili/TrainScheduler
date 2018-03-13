@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class ScheduleEntry {
 	private Train train;
 	private ArrayList<ScheduleSection> sections;
+	private ArrayList<Segment> segments;
 	private RailRoadElement from_station, to_station;
 
 	public ScheduleEntry(Train train, ArrayList<ScheduleSection> sections, RailRoadElement from_station,
@@ -53,5 +54,9 @@ public class ScheduleEntry {
 			w += s.getRoute().weight;
 		}
 		return w;
+	}
+
+	public ArrayList<Segment> getSegments() {
+		return segments;
 	}
 }
