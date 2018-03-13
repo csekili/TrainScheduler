@@ -79,6 +79,10 @@ public class Scheduler {
 
 	}
 
+	public ArrayList<Segment> getStations(){
+		return stations;
+	}
+	
 	/// In-Events
 
 	public void pathChanged(Path path) {

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import hu.bme.mit.inf.scheduler.config.Config;
 import hu.bme.mit.inf.scheduler.database.DatabaseQueries;
 import hu.bme.mit.inf.scheduler.gui.MainWindow;
-import hu.bme.mit.inf.scheduler.model.ScheduleEntry;
 import hu.bme.mit.inf.scheduler.model.Segment;
 import hu.bme.mit.inf.scheduler.model.Train;
 
@@ -88,27 +87,36 @@ public class Main implements Config {
 		ArrayList<Segment> stations = DatabaseQueries.getStations();
 
 		scheduler.addSchedule(null, stations.get(0), stations.get(2));
-		
+
 		mw.drawRoute(scheduler.getSchedules().getEntry(0));
 	}
 
 	public static boolean windowClosed() {
 		return true;
-		//TODO: finish process
+		// TODO: finish process
 	}
 
 	private static void initWindow() {
-		//mw = new MainWindow();
+		// mw = new MainWindow();
 		try {
 			MainWindow.init(null);
-			mw=MainWindow.getWindow();
+			mw = MainWindow.getWindow();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public static void addScheduleEntry(Train t, int fromID, int toID){
-		//scheduler.addSchedule(...);
+	public static void addScheduleEntry(Train t, int fromID, int toID) {
+		Segment fromStation = null, toStation = null;
+		for (Segment s : scheduler.getStations()) {
+			if (s.getId() == fromID)
+				fromStation = s;
+			if (s.getId() == toID)
+				toStation = s;
+		}
+		if (fromStation == null || toStation == null)
+			return;
+		scheduler.addSchedule(t, fromStation, toStation);
 	}
 
 	private static void initScheduler() {
