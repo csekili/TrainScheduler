@@ -3,10 +3,13 @@ package hu.bme.mit.inf.scheduler.gui;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXSpinner;
 import com.jfoenix.controls.JFXTextField;
+import hu.bme.mit.inf.scheduler.main.Main;
 import hu.bme.mit.inf.scheduler.model.ScheduleEntry;
 import hu.bme.mit.inf.scheduler.model.Segment;
 import hu.bme.mit.inf.scheduler.model.Train;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -18,6 +21,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.util.HashMap;
 
@@ -25,11 +29,15 @@ import java.util.HashMap;
 public class MainWindow extends Application {
 
     HBox routeHolder;
+    Text errorText;
 
     private HashMap<Integer, SectionHolder> route = new HashMap<>();
+    private static MainWindow mw; //:(
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        //hacking
+        mw=this;
 
         //--------------------------------------------------------------------------------------------------------------
         //basic properties of the window, root node
@@ -37,6 +45,7 @@ public class MainWindow extends Application {
 
         primaryStage.setTitle("Train Tracker");
         primaryStage.setMinWidth(500);
+        primaryStage.setOnCloseRequest(new eh_FormClosing());
 
         BorderPane root = new BorderPane();
 
@@ -44,7 +53,7 @@ public class MainWindow extends Application {
         primaryStage.setScene(scene);
 
         //adding color profile
-        scene.getStylesheets().addAll("jfx-button-red.css");
+        scene.getStylesheets().addAll("hu/bme/mit/inf/scheduler/gui/jfx-button-red.css");
 
         //--------------------------------------------------------------------------------------------------------------
         //creating control bar
@@ -86,7 +95,7 @@ public class MainWindow extends Application {
         spinner.setVisible(false);
         bottomBar.getChildren().add(spinner);
 
-        Text errorText = new Text("Ouch! Something bad has happened. Please retry.");
+        errorText = new Text("Ouch! Something bad has happened. Please retry.");
         errorText.setStyle("-fx-font-family: Roboto, \"Segoe UI\",  sans-serif; -fx-font-size: 12px;");
         errorText.setFill(javafx.scene.paint.Color.valueOf("#E53935"));
         errorText.setVisible(false);
@@ -94,21 +103,23 @@ public class MainWindow extends Application {
 
 
         //--------------------------------------------------------------------------------------------------------------
-        //creating content placeholder
+        //creating content
         //--------------------------------------------------------------------------------------------------------------
+        VBox drawPane = new VBox();
+        drawPane.setAlignment(Pos.CENTER);
+        root.setCenter(drawPane);
+
+        //creating current route placeholder
         routeHolder = new HBox();
         routeHolder.setFillHeight(false);
         routeHolder.setAlignment(Pos.CENTER);
-        root.setCenter(routeHolder);
+        routeHolder.setPadding(new Insets(20, 10, 20, 10));
+        drawPane.getChildren().add(routeHolder);
 
-        /*//testing image handling TODO: delete this
-        routeHolder.getChildren().add(new SectionHolder("S12").getPanel());
-        SectionHolder itt = new SectionHolder("S39"); itt.setTrainHere(true); routeHolder.getChildren().add(itt.getPanel());
-        routeHolder.getChildren().add(new SectionHolder("S42").getPanel());
-        routeHolder.getChildren().add(new SectionHolder("S18").getPanel());
-        routeHolder.getChildren().add(new EndSectionHolder("S4").getPanel());
-        */
-
+        //drawing map of world
+        /*ImageView railroadMap = new ImageView();
+        railroadMap.setImage(new Image(""));
+        drawPane.getChildren().add(railroadMap);*/
 
 
         //--------------------------------------------------------------------------------------------------------------
@@ -117,12 +128,12 @@ public class MainWindow extends Application {
         primaryStage.show();
     }
 
-    public void init(String[] args) {
+    public static void init(String[] args) {
         new Thread(() -> prepareStart(args)).start();
 
     }
 
-    private void prepareStart(String[] args) {launch(args);}
+    private static void prepareStart(String[] args) {launch(args);}
 
     public void drawRoute(ScheduleEntry e) {
         //filling up hashmap of route
@@ -132,9 +143,41 @@ public class MainWindow extends Application {
         route.put(e.getRailRoadElements().get(e.getRailRoadElements().size()-1).getId(), new EndSectionHolder("S" + e.getRailRoadElements().get(e.getRailRoadElements().size()-1).getId()));
 
         //drawing route on screen
-        routeHolder.getChildren().clear();
+        Platform.runLater(() -> routeHolder.getChildren().clear());
         for(SectionHolder h : route.values()) {
-            routeHolder.getChildren().add(h.getPanel());
+            Platform.runLater(() -> routeHolder.getChildren().add(h.getPanel()));
+        }
+    }
+
+    public static MainWindow getWindow() {
+        while(mw  == null){
+            try {
+                Thread.sleep(100);
+            }catch (Exception e ){}
+
+        };
+        return mw;
+    }
+
+
+    //------------------------------------------------------------------------------------------------------------------
+    //event handling classes
+    //------------------------------------------------------------------------------------------------------------------
+
+    private class eh_FormClosing implements EventHandler<WindowEvent> {
+
+        @Override
+        public void handle(WindowEvent event) {
+            //option A
+            //System.exit(0);
+
+            //option B
+            //tries to terminate main process using its windowClosed() function; if fails then gives error message
+            if (Main.windowClosed()) return;
+
+            errorText.setText("Couldn't terminate application! Please try again.");
+            errorText.setVisible(true);
+            event.consume();
         }
     }
 }
