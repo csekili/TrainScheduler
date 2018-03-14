@@ -1,9 +1,14 @@
 package hu.bme.mit.inf.scheduler.main;
 
-import java.util.ArrayList;
+import org.slf4j.impl.SimpleLoggerFactory;
 
+import hu.bme.mit.inf.modes3.messaging.communication.factory.MessagingServiceFactory;
+import hu.bme.mit.inf.modes3.messaging.communication.factory.TopicFactory;
+import hu.bme.mit.inf.modes3.messaging.mms.TopicBasedMessagingService;
+import hu.bme.mit.inf.modes3.utils.common.jopt.ArgumentDescriptorWithParameter;
+import hu.bme.mit.inf.modes3.utils.common.jopt.ArgumentRegistry;
 import hu.bme.mit.inf.scheduler.config.Config;
-import hu.bme.mit.inf.scheduler.database.DatabaseQueries;
+import hu.bme.mit.inf.scheduler.controller.MainController;
 import hu.bme.mit.inf.scheduler.gui.MainWindow;
 import hu.bme.mit.inf.scheduler.model.Segment;
 import hu.bme.mit.inf.scheduler.model.Train;
@@ -13,82 +18,36 @@ public class Main implements Config {
 	private static Scheduler scheduler;
 	private static MainWindow mw;
 
-	private static void test() {
-		// Open a new graphical window
-		// MainWindow w = new MainWindow();
-		// w.init(args);
+	private static void test(String... args) {
+		/**
+		 * 
+		 */
+		ArgumentRegistry registry = new ArgumentRegistry(new SimpleLoggerFactory());
+		registry.registerArgumentWithOptions(new ArgumentDescriptorWithParameter<String>("address",
+				"The address of the transport server", String.class));
+		registry.registerArgumentWithOptions(new ArgumentDescriptorWithParameter<Integer>("port",
+				"The port used by the transport server", Integer.class));
 
-		// --------------------------------------------
+		registry.parseArguments(args);
 
-		// Test RouteLinks
-		// ArrayList<RouteLink> routeLinks = DatabaseQueries.getRouteLinks();
+		TopicBasedMessagingService msgService = MessagingServiceFactory.createStackForTopics(registry,
+				new SimpleLoggerFactory(), TopicFactory.createEveryTopic());
 
-		// System.out.println(routeLinks.size() + "\n");
-		// for (int i = 0; i < routeLinks.size(); i++) {
-		// RouteLink rl = routeLinks.get(i);
-		// System.out.println(i);
-		// System.out.println("From:" + rl.getFromRoute().getFrom().getId());
-		// System.out.println("Via :" + rl.getFromRoute().getTo().getId());
-		// System.out.println("Via :" + rl.getToRoute().getFrom().getId());
-		// System.out.println("To :" + rl.getToRoute().getTo().getId());
-		// System.out.println("");
-		// }
-
-		// --------------------------------------------
-
-		// Test Scheduler class, adding a new ScheduleEntry
-		// ArrayList<Segment> stations = DatabaseQueries.getStations();
-		//
-		// Scheduler scheduler = new Scheduler();
-		// scheduler.loadData();
-		//
-		// scheduler.addSchedule(null, stations.get(1), stations.get(2));
-		//
-		// System.out.println("");
-		// --------------------------------------------
-
-		// Test routes
-		// ArrayList<Route> routes = DatabaseQueries.getRoutes();
-		// System.out.println("Routes size: " + routes.size());
-		//
-		// for (int i = 0; i < routes.size(); i++) {
-		// Route r = routes.get(i);
-		// System.out.println(i);
-		// System.out.println("From: " + r.getFrom().getId());
-		// System.out.println("To : " + r.getTo().getId() + "\n");
-		// }
-
-		// --------------------------------------------
-
-		// Test paths' generation
-		// ArrayList<Path> paths = DatabaseQueries.getPaths();
-		//
-		// for (Path p : paths) {
-		// if (p.getVia().getId() == 22 || p.getFrom().getId() == 22 ||
-		// p.getTo().getId() == 22) {
-		// System.out.println("to: " + p.getTo().getId());
-		// System.out.println("via: " + p.getVia().getId());
-		// System.out.println("from: " + p.getFrom().getId());
-		// System.out.println();
-		// }
-		// }
-		//
-		// System.out.println(paths.size());
-		// --------------------------------------------
+		MainController controller = new MainController(msgService);
 	}
 
 	public static void main(String[] args) {
 		// Just for testing
-		test();
+		test(args);
 		initScheduler();
 		initWindow();
 
 		// GUI TEST
-		ArrayList<Segment> stations = DatabaseQueries.getStations();
-
-		scheduler.addSchedule(null, stations.get(0), stations.get(2));
-
-		mw.drawRoute(scheduler.getSchedules().getEntry(0));
+		// ArrayList<Segment> stations = DatabaseQueries.getStations();
+		//
+		// scheduler.addSchedule(null, stations.get(0), stations.get(2));
+		//
+		// mw.drawRoute(scheduler.getSchedules().getEntry(0));
 	}
 
 	public static boolean windowClosed() {
