@@ -2,5 +2,4 @@
 .settings/**
 target/**
 /bin/
-dependencies/**
 /target/
