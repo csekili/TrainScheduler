@@ -186,10 +186,10 @@ public class MainWindow extends Application {
 
         //filling up hashmap of route
         route.clear(); //reset route
-        for(int i=0; i<e.getRailRoadElements().size()-1; i++) {
-            route.add(new SectionHolder(String.valueOf(e.getRailRoadElements().get(i).getId())));
+        for(int i=0; i<e.getRailRoadElements_RouteBorders().size()-1; i++) {
+            route.add(new SectionHolder(String.valueOf(e.getRailRoadElements_RouteBorders().get(i).getId())));
         }
-        route.add(new EndSectionHolder(String.valueOf(e.getRailRoadElements().get(e.getRailRoadElements().size()-1).getId())));
+        route.add(new EndSectionHolder(String.valueOf(e.getRailRoadElements_RouteBorders().get(e.getRailRoadElements_RouteBorders().size()-1).getId())));
 
         //drawing route on screen
         Platform.runLater(() -> routeHolder.getChildren().clear());
@@ -199,7 +199,7 @@ public class MainWindow extends Application {
     }
 
     public void setTrain(RailRoadElement here) {
-        for (SectionHolder i : route) {
+    	for (SectionHolder i : route) {
             String strID = (here.getId() < 10 ? " " : "") + " S" + String.valueOf(here.getId());
             i.setTrainHere(i.getID().equals(strID));
         }

@@ -75,6 +75,7 @@ public class Scheduler {
 				mini = i;
 			}
 		}
+		
 		schedules.addScheduleEntry(possibleEntries.get(mini));
 	}
 

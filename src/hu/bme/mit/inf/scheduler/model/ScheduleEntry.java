@@ -5,8 +5,12 @@ import java.util.ArrayList;
 public class ScheduleEntry {
 	private Train train;
 	private ArrayList<ScheduleSection> sections;
-	private ArrayList<RailRoadElement> railRoadElements;
 	private RailRoadElement from_station, to_station;
+
+	private ArrayList<RailRoadElement> railRoadElements_RouteBorders;
+	private ArrayList<RailRoadElement> railRoadElements;
+	private ArrayList<Tuple> tuples;
+	private ArrayList<Route> routes;
 
 	public ScheduleEntry(Train train, ArrayList<ScheduleSection> sections, RailRoadElement from_station,
 			RailRoadElement to_station) {
@@ -15,6 +19,27 @@ public class ScheduleEntry {
 		this.from_station = from_station;
 		this.to_station = to_station;
 		setSegments();
+		setTuples();
+	}
+
+	private void setTuples() {
+		tuples = new ArrayList<>();
+		for (int i = 0; i < railRoadElements.size(); i++) {
+			if (i < railRoadElements.size() - 2) {
+				RailRoadElement from = railRoadElements.get(i);
+				RailRoadElement via = railRoadElements.get(i + 1);
+				RailRoadElement to = railRoadElements.get(i + 2);
+				tuples.add(new Tuple(from, via, to));
+			} else {
+				RailRoadElement from = railRoadElements.get(i);
+				if (i == railRoadElements.size() - 2) {
+					RailRoadElement via = railRoadElements.get(i + 1);
+					tuples.add(new Tuple(from, via, null));
+				} else if (i == railRoadElements.size() - 1) {
+					tuples.add(new Tuple(from, null, null));
+				}
+			}
+		}
 	}
 
 	public Train getTrain() {
@@ -61,15 +86,50 @@ public class ScheduleEntry {
 		return railRoadElements;
 	}
 
+	public ArrayList<RailRoadElement> getRailRoadElements_RouteBorders() {
+		return railRoadElements_RouteBorders;
+	}
+
+	public ArrayList<Tuple> getTuples() {
+		return tuples;
+	}
+
 	private void setSegments() {
-		railRoadElements = new ArrayList<>();
+		railRoadElements_RouteBorders = new ArrayList<>();
 		for (int i = 0; i < sections.size(); i++) {
 			ScheduleSection s = sections.get(i);
-			railRoadElements.add(s.getRoute().getFrom());
+			railRoadElements_RouteBorders.add(s.getRoute().getFrom());
 			if (i == sections.size() - 1) {
-				railRoadElements.add(s.getRoute().getTo());
+				railRoadElements_RouteBorders.add(s.getRoute().getTo());
 			}
 		}
-		
+
+		routes = new ArrayList<>();
+		for (int i = 0; i < sections.size(); i++) {
+			ScheduleSection s = sections.get(i);
+			routes.add(s.getRoute());
+		}
+
+		railRoadElements = new ArrayList<>();
+
+		for (Route r : routes) {
+			for (Path p : r.getPaths()) {
+				addRailRoadElementToList(p.getFrom());
+				addRailRoadElementToList(p.getVia());
+				if (!r.getTo().equals(p.getVia()))
+					addRailRoadElementToList(p.getTo());
+			}
+		}
+	}
+
+	private void addRailRoadElementToList(RailRoadElement r) {
+		if (railRoadElements == null)
+			railRoadElements = new ArrayList<>();
+
+		for (RailRoadElement rre : railRoadElements) {
+			if (rre.equals(r))
+				return;
+		}
+		railRoadElements.add(r);
 	}
 }
